@@ -1,0 +1,65 @@
+Name: Tanavi Shailesh Narkhede
+Roll No.: 407B052
+Assignment 7
+CODE:
+CalculatorClient.java
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+
+public class CalculatorClient {
+
+    public static void main(String[] args) {
+        try {
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Enter number A: ");
+            double a = sc.nextDouble();
+            System.out.print("Enter number B: ");
+            double b = sc.nextDouble();
+            System.out.print("Enter operation (add, subtract, multiply, divide): ");
+            String op = sc.next();
+
+            String urlString = "http://localhost:8080/calculator/" + op + "?a=" + a + "&b=" + b;
+
+            URL url = new URL(urlString);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+
+            int status = con.getResponseCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String result = in.readLine();
+            in.close();
+            System.out.println("Result: " + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+CalculatorContainer.java
+package com.example.calculatorservice;
+import org.springframework.web.bind.annotation.*;
+@RestController
+@RequestMapping("/calculator")
+public class CalculatorController {
+    @GetMapping("/add")
+    public double add(@RequestParam double a, @RequestParam double b) {
+        return a + b;
+    }
+    @GetMapping("/subtract")
+    public double subtract(@RequestParam double a, @RequestParam double b) {
+        return a - b;
+    }
+    @GetMapping("/multiply")
+    public double multiply(@RequestParam double a, @RequestParam double b) {
+        return a * b;
+    }  @GetMapping("/divide")
+    public double divide(@RequestParam double a, @RequestParam double b) {
+        if (b == 0) throw new ArithmeticException("Cannot divide by zero");
+        return a / b;
+    }
+}
+OUTPUT:
+  
